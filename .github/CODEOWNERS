@@ -1,0 +1,7 @@
+# Codeowners
+
+* @lmnleaf
+
+*.md @lmnleaf @test
+
+/.github/ @lmnleaf
