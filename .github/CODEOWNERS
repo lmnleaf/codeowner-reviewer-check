@@ -1,3 +1,5 @@
 # Codeowners
 
-*.md @lmnleaf
+* @lmnleaf
+
+*.md @lmnleaf @test
