@@ -3,3 +3,5 @@
 * @lmnleaf
 
 *.md @lmnleaf @test
+
+*.js @test
