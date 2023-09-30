@@ -19,20 +19,25 @@ async function main() {
       return info;
     });
 
+    core.info('Codeowner Content from getCodeownercontent: ' + codeownerContent);
+
     if (codeownerContent === "NO CODEOWNERS FOUND" ) {
       return core.info(codeownerContent);
     }
 
     const prNumber = context.payload.pull_request.number;
-
+    core.info('PR Number: ' + prNumber);
+  
     // get files from the PR
     const prFileInfo = await octokit.rest.pulls.listFiles({
       ...context.repo,
       pull_number: prNumber,
     }).then((response) => {
+      core.info('List Files Response: ' + response.data);
       return response.data;
     });
 
+    core.info('PR FILE INFO: ' + prFileInfo[0]);
     const prFilePaths = [];
     prFileInfo.forEach((file) => {
       prFilePaths.push(file.filename);
@@ -46,6 +51,7 @@ async function main() {
       return response.data;
     });
 
+    core.info('Reviews: ' + reviews[0]);
     const currentReviews = []
     reviews.forEach((review) => {
       currentReviews.push({ reviewer: '@' + review.user.login, state: review.state });

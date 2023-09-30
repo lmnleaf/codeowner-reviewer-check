@@ -18,6 +18,8 @@ async function getCodeownerContent(octokit, context, core) {
       }
     });
 
+    core.info('Codeowners Response: ' + response.body);
+
     // read CODEOWNERS content
     const reader = response.body.getReader();
     let { value: contents, done: readerDone } = await reader.read();
@@ -25,7 +27,7 @@ async function getCodeownerContent(octokit, context, core) {
     const utf8Decoder = new TextDecoder("utf-8");
     contents = contents ? utf8Decoder.decode(contents, { stream: true }) : "NO CONTENT";
 
-    core.info('Codeowners Content: ', contents);
+    core.info('Codeowners Content: ' + contents);
 
     return contents;
   } catch(error) {
