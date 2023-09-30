@@ -9917,7 +9917,7 @@ async function main() {
 
     let completedOutput = completedReviews.length > 0 ? JSON.stringify(completedReviews) : "None";
     let startedOutput = startedReviews.length > 0 ? JSON.stringify(startedReviews) : "None";
-    let needsReviewOutput = needsReview.length > 0 ? JSON>stringify(startedReviews) : "None";
+    let needsReviewOutput = needsReview.length > 0 ? JSON.stringify(needsReview) : "None";
 
     let output = `Completed Reviews: ` + completedOutput + `\n
       Started Reviews: ` + startedOutput + `\n
