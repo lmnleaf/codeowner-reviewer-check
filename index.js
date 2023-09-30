@@ -14,7 +14,7 @@ async function main() {
 
     const minReviewers = core.getInput('min_reviewers');
 
-    const codeownerContent = await getCodeownerContent(octokit, context)
+    const codeownerContent = await getCodeownerContent(octokit, context, core)
     .then((info) => {
       return info;
     });
