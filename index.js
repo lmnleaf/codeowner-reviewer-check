@@ -1,5 +1,9 @@
 const core = require('@actions/core');
 const github = require('@actions/github');
+const getCodeownerContent = require("../src/get-codeowner-content.js");
+const prepareCodeownerContent = require("../src/prepare-codeowner-content.js");
+const setRequiredReviewers = require("../src/set-required-reviewers.js");
+const compareReviewers = require("../src/compare-reviewers.js");
 
 const context = github.context;
 
