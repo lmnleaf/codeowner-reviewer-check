@@ -1,9 +1,8 @@
-async function getCodeownerContent(octokit, owner, repo) {
+async function getCodeownerContent(octokit, context) {
   try {
     // use octokit to get the CODEOWNERS URL
     const fileInfo = await octokit.rest.repos.getContent({
-      owner: owner,
-      repo: repo,
+      ...context.repo,
       path: ".github/CODEOWNERS"
     });
 
