@@ -19,25 +19,20 @@ async function main() {
       return info;
     });
 
-    core.info('Codeowner Content from getCodeownercontent: ' + codeownerContent);
-
     if (codeownerContent === "NO CODEOWNERS FOUND" ) {
       return core.info(codeownerContent);
     }
 
     const prNumber = context.payload.pull_request.number;
-    core.info('PR Number: ' + prNumber);
   
     // get files from the PR
     const prFileInfo = await octokit.rest.pulls.listFiles({
       ...context.repo,
       pull_number: prNumber,
     }).then((response) => {
-      core.info('List Files Response: ' + response.data);
       return response.data;
     });
 
-    core.info('PR FILE INFO: ' + prFileInfo[0]);
     const prFilePaths = [];
     prFileInfo.forEach((file) => {
       prFilePaths.push(file.filename);
@@ -51,7 +46,7 @@ async function main() {
       return response.data;
     });
 
-    core.info('Reviews: ' + reviews[0]);
+    core.info('Reviews: ' + reviews);
     const currentReviews = []
     reviews.forEach((review) => {
       currentReviews.push({ reviewer: '@' + review.user.login, state: review.state });
@@ -69,6 +64,14 @@ async function main() {
       requiredReviewers,
       minReviewers
     );
+
+    core.info('Completed Reviews: ' + (completedReviews.length > 0));
+    core.info('Started Reviews: ' + (startedReviews.length > 0));
+    core.info('Needs Review: ' + (needsReview.length > 0));
+
+    core.info('Completed Reviews: ' + completedReviews);
+    core.info('Started Reviews: ' + startedReviews);
+    core.info('Needs Review' + Object.keys(needsReview));
 
     let completedOutput = completedReviews.length > 0 ? JSON.stringify(completedReviews) : "None";
     let startedOutput = startedReviews.length > 0 ? JSON.stringify(startedReviews) : "None";
