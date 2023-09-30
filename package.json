@@ -1,5 +1,5 @@
 {
-  "name": "reviewer-check",
+  "name": "codeowner-reviewer-check",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
