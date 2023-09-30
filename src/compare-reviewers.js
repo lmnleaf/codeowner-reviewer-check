@@ -43,10 +43,11 @@ function compareReviewers(currentReviews, requiredReviewers, minReviewers) {
     // Notes:
     // - if the total number of codeowners for the files is the same as the number of codeowners who have 
     // completed AND started reviews, then the files will not be added to needsReview.
-    // - if there are more total codeowners on hte files than the number of codeowners who have 
+    // - if there are more total codeowners on the files than the number of codeowners who have
     // completed AND started reviews, then the files will be added to needsReview. Reasoning: If the codeowner
     // who started a review, doesn't get around to completing it, the PR author will have a list of other 
-    // codeowners who could review the PR.
+    // codeowners who could review the PR AND until the required number of codeowners has approved the PR,
+    // the PR is still in need of review.
     requiredSet.forEach((required) => {
       let min = minReviewers;
       if (requiredSet.size < 2) {

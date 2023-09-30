@@ -5,12 +5,9 @@ const context = github.context;
 
 async function main() {
   try {
-    if (github.context.eventName === 'pull_request') {
-      return core.setFailed('Waiting for Reviews');
-    };
-
     const token = core.getInput('GITHUB_TOKEN');
     const octokit = new github.getOctokit(token);
+
     const minReviewers = core.getInput('min_reviewers');
 
     const codeownerContent = await getCodeownerContent(octokit, owner, repo)
@@ -19,13 +16,14 @@ async function main() {
     });
 
     if (codeownerContent === "NO CODEOWNERS FOUND" ) {
-      return [];
+      return core.info(codeownerContent);
     }
+
+    const prNumber = context.payload.pull_request.number;
 
     // get files from the PR
     const prFileInfo = await octokit.rest.pulls.listFiles({
-      owner: owner,
-      repo: repo,
+      ...context.repo,
       pull_number: prNumber,
     }).then((response) => {
       return response.data;
@@ -38,8 +36,7 @@ async function main() {
 
     // get reviews on the PR
     const reviews = await octokit.rest.pulls.listReviews({
-      owner: owner,
-      repo: repo,
+      ...context.repo,
       pull_number: prNumber,
     }).then((response) => {
       return response.data;
