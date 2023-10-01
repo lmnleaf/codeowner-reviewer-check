@@ -9655,6 +9655,14 @@ module.exports = eval("require")("../src/prepare-codeowner-content.js");
 
 /***/ }),
 
+/***/ 6080:
+/***/ ((module) => {
+
+module.exports = eval("require")("../src/prepare-review-info.js");
+
+
+/***/ }),
+
 /***/ 4991:
 /***/ ((module) => {
 
@@ -9846,6 +9854,7 @@ const getCodeownerContent = __nccwpck_require__(3699);
 const prepareCodeownerContent = __nccwpck_require__(5801);
 const setRequiredReviewers = __nccwpck_require__(4991);
 const compareReviewers = __nccwpck_require__(2359);
+const prepareReviewInfo = __nccwpck_require__(6080);
 
 const context = github.context;
 
@@ -9861,7 +9870,7 @@ async function main() {
       return info;
     });
 
-    if (codeownerContent === "NO CODEOWNERS FOUND" ) {
+    if (codeownerContent === 'NO CODEOWNERS FOUND' ) {
       return core.info(codeownerContent);
     }
 
@@ -9906,19 +9915,22 @@ async function main() {
       minReviewers
     );
 
-    let completedOutput = completedReviews.length > 0 ? JSON.stringify(completedReviews) : "None";
-    let startedOutput = startedReviews.length > 0 ? JSON.stringify(startedReviews) : "None";
-    let needsReviewOutput = needsReview.length > 0 ? JSON>stringify(startedReviews) : "None";
-
-    let output = `Completed Reviews: ` + completedOutput + `\n
-      Started Reviews: ` + startedOutput + `\n
-      Needs Review: ` + needsReviewOutput
+    // log codeowner reviews
+    let completed = '\u001b[48;2;74;153;69mCompleted Reviews: \n' + prepareReviewInfo(completedReviews);
+    let started = '\u001b[48;2;69;82;153mStarted Reviews: \n' + prepareReviewInfo(startedReviews);
+    let needed = '\u001b[48;2;191;25;25mNeeds Review: \n' + prepareReviewInfo(needsReview);
 
     if (needsReview.length > 0) {
-      return core.setFailed(output);
+      core.info(completed + '\n' + started);
+      return core.setFailed('\u001b[1mPlease request Codeowner reviews. \n' + needed);
     }
 
-    core.info(ouput);
+    core.notice(
+      '\u001b[1mBoldAll required Codeowner reviews have been completed. Thank you! \n' +
+      completed + '\n' +
+      started + '\n' +
+      needed
+    );
   } catch (error) {
     core.setFailed(error.message);
   }
