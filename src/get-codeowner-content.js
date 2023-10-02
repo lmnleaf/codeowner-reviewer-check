@@ -3,16 +3,16 @@ async function getCodeownerContent(octokit, context) {
     // use octokit to get the CODEOWNERS URL
     const fileInfo = await octokit.rest.repos.getContent({
       ...context.repo,
-      path: ".github/CODEOWNERS"
+      path: '.github/CODEOWNERS'
     });
 
     let downloadURL = fileInfo.data.download_url;
 
     // get CODEOWNERS content
     const response = await fetch(downloadURL, {
-      method: "GET",
+      method: 'GET',
       headers: {
-        "Accept": "application/vnd.github+json",
+        'Accept': 'application/vnd.github+json',
       }
     });
 
@@ -21,11 +21,11 @@ async function getCodeownerContent(octokit, context) {
     let { value: contents, done: readerDone } = await reader.read();
 
     const utf8Decoder = new TextDecoder("utf-8");
-    contents = contents ? utf8Decoder.decode(contents, { stream: true }) : "NO CONTENT";
+    contents = contents ? utf8Decoder.decode(contents, { stream: true }) : 'NO CONTENT';
 
     return contents;
   } catch(error) {
-    if (error.message === "Not Found") {
+    if (error.message === 'Not Found') {
       return 'NO CODEOWNERS FOUND';
     }
     throw error;
