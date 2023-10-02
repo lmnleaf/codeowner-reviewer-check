@@ -12,7 +12,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Check Reviews
-        uses: lmnleaf/codeowner-reviewer-check@reviewer_check_workflow
+        uses: lmnleaf/codeowner-reviewer-check@improve_output
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           min_reviewers: 2
