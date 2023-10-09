@@ -1,0 +1,17 @@
+name: Codeowner Reviewer Check
+
+on:
+  pull_request_review:
+
+jobs:
+  check-reviews:
+    runs-on: ubuntu-latest
+    name: Check Codeowner Reviews
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Check Reviews
+        uses: lmnleaf/codeowner-reviewer-check@main
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          min_reviewers: 2
