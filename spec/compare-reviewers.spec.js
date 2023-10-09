@@ -170,4 +170,21 @@ describe("Compare Reviewers", function() {
       { files: '*.js', codeowners: ['@codeowner2', '@codeowner3', '@codeowner5', '@codeowner6'] }
     ]);
   });
+
+  it("does NOT require reviews when their aren't any codeowners", function() {
+    let noRequiredReviewers = [
+      { files: '/woot/yip', requiredReviewers: [] }
+    ]
+    let currentReviews = [
+      { reviewer: '@codeowner1', state: 'APPROVED' }
+    ]
+    let { completedReviews, startedReviews, needsReview } = compareReviewers(
+      currentReviews,
+      noRequiredReviewers,
+      minReviewers
+    )
+    expect(completedReviews).toEqual([]);
+    expect(startedReviews).toEqual([]);
+    expect(needsReview).toEqual([]);
+  });
 });
