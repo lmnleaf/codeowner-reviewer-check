@@ -39,9 +39,10 @@ Started Reviews:
 Files: *; Codeowners: @codeowner1, @codeowner2
 Files: /some/files; Codeowners: @codeowner2, @codeowner5
 
-Error: Please request Codeowner reviews. 
 Needs Review: 
 Files: *.js; Codeowners: @codeowner3, @codeowner4
+
+Error: Codeowner reviews are needed. Please ask Codeowners to complete their reviews.
 ```
 
 Workflow setup:
