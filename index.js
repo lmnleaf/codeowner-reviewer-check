@@ -59,7 +59,7 @@ async function main() {
     const requiredReviewers = setRequiredReviewers(codeownerInfo, prFilePaths);
 
     // compare codeowners to reviews on the PR
-    const { completedReviews, startedReviews, needsReview } = compareReviewers(
+    const { completedReviews, startedReviews, needsReview, incompleteReviews } = compareReviewers(
       currentReviews,
       requiredReviewers,
       minReviewers
@@ -70,13 +70,14 @@ async function main() {
     let started = '\u001b[48;2;69;82;153mStarted Reviews: \n' + prepareReviewInfo(startedReviews);
     let needed = '\u001b[48;2;191;25;25mNeeds Review: \n' + prepareReviewInfo(needsReview);
 
-    if (needsReview.length > 0) {
-      core.info(completed + '\n' + started);
-      return core.setFailed('\u001b[1mPlease request Codeowner reviews. \n' + needed);
+    if (incompleteReviews) {
+      core.info(completed + '\n' + started + '\n' + needed);
+      errorMessage = '\u001b[1mCodeowner reviews are needed. Please ask Codeowners to complete their reviews.'
+      return core.setFailed(errorMessage);
     }
 
     core.notice(
-      '\u001b[1mBoldAll required Codeowner reviews have been completed. Thank you! \n' +
+      '\u001b[1mAll required Codeowner reviews have been completed. Thank you! \n' +
       completed + '\n' +
       started + '\n' +
       needed

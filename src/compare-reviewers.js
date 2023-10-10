@@ -18,6 +18,9 @@ function compareReviewers(currentReviews, requiredReviewers, minReviewers) {
   let approvalsSet = new Set(approvals);
   let startedSet = new Set(started);
 
+  // track incomplete reviews
+  let incompleteFileReviews = [];
+
   requiredReviewers.forEach((reviewers) => {
     // Set of required reviews (files that require code owner review and the codeowners)
     // Example requiredSet: [ '@codeowner1', '@codeowner2', '@codeowner3', '@codeowner4' ]
@@ -29,10 +32,22 @@ function compareReviewers(currentReviews, requiredReviewers, minReviewers) {
     // Set of codeowners that have started a review on the PR
     let startedIntersection = new Set([...startedSet].filter(r => requiredSet.has(r)));
 
+    // min reviewers for the files
+    let min = minReviewers;
+    if (requiredSet.size < 2) {
+      min = requiredSet.size
+    }
+
     if (approvalIntersection.size > 0) {
       completedReviews.push({ files: reviewers.files, codeowners: [...approvalIntersection] });
-    } 
-    
+    }
+
+    // if the number of codeowner approvals is less than the min number of codeowner reviews required
+    // for the files, then track the incomplete file reviews by adding true to incompleteFileReviews.
+    if (approvalIntersection.size < min) {
+      incompleteFileReviews.push(true);
+    }
+
     if (startedIntersection.size > 0) {
       startedReviews.push({ files: reviewers.files, codeowners: [...startedIntersection] });
     }
@@ -49,11 +64,6 @@ function compareReviewers(currentReviews, requiredReviewers, minReviewers) {
     // codeowners who could review the PR AND until the required number of codeowners has approved the PR,
     // the PR is still in need of review.
     requiredSet.forEach((required) => {
-      let min = minReviewers;
-      if (requiredSet.size < 2) {
-        min = requiredSet.size
-      }
-
       if (
           approvalIntersection.size < min && 
           !approvalIntersection.has(required) && 
@@ -68,7 +78,16 @@ function compareReviewers(currentReviews, requiredReviewers, minReviewers) {
     }  
   });
 
-  return { completedReviews, startedReviews, needsReview };
+  // if there are any files that still need codeowner review, then incompleteReviews is set to true.
+  // Note: Codeowners may have started reviews, but not enough codeowner reviews have been completed to
+  // meet the minimum number of reviews required for all the various files.
+  let incompleteReviews = true;
+
+  if (incompleteFileReviews.length === 0) {
+    incompleteReviews = false;
+  }
+
+  return { completedReviews, startedReviews, needsReview, incompleteReviews };
 };
 
 module.exports = compareReviewers
