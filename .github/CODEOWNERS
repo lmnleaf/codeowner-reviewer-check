@@ -2,6 +2,6 @@
 
 * @lmnleaf
 
-*.md @lmnleaf @test
+*.md @lmnleaf
 
-/.github/ @lmnleaf
+/.github/ @lmnleaf @test
