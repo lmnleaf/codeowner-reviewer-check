@@ -9915,23 +9915,15 @@ async function main() {
       minReviewers
     );
 
-    // log codeowner reviews
-    let completed = '\u001b[48;2;74;153;69mCompleted Reviews: \n' + prepareReviewInfo(completedReviews);
-    let started = '\u001b[48;2;69;82;153mStarted Reviews: \n' + prepareReviewInfo(startedReviews);
-    let needed = '\u001b[48;2;191;25;25mNeeds Review: \n' + prepareReviewInfo(needsReview);
+    const reviewInfo = prepareReviewInfo(completedReviews, startedReviews, needsReview);
 
+    // log codeowner reviews
     if (incompleteReviews) {
-      core.info(completed + '\n' + started + '\n' + needed);
-      errorMessage = '\u001b[1mCodeowner reviews are needed. Please ask Codeowners to complete their reviews.'
-      return core.setFailed(errorMessage);
+      core.info(reviewInfo.info);
+      return core.setFailed(reviewInfo.error);
     }
 
-    core.notice(
-      '\u001b[1mAll required Codeowner reviews have been completed. Thank you! \n' +
-      completed + '\n' +
-      started + '\n' +
-      needed
-    );
+    core.notice(reviewInfo.success);
   } catch (error) {
     core.setFailed(error.message);
   }
