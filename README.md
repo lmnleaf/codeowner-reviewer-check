@@ -2,7 +2,7 @@
 
 The Codeowner Reviewer Check Action supplements GitHub's `Require review from Code Owners` branch protection and repo rule set protections for PRs.  
 
-Details:
+Overview:
 * Currently, with GitHub branch protections or repo rule sets, when code owner reviews are required, only one code owner per set of files is required to review the pull request.
 * This Action can be used to ensure that a minimum number of code owners has reviewed the pull request before it is merged.
   * Required code owners will be pulled from the `CODEOWNERS` file in the default branch of the repository.
@@ -14,6 +14,12 @@ Limitations:
 * This Action will not take exceptions to code owner requirements into account. If some files in a subdirectory are excepted from code owner review in your `CODEOWNERS` file, this action will ignore the exceptions and require review.
 * This Action does not assign code owner reviewers to a PR.
 * To use this Action as a required status check, as long as code owner reviews are required as part of the branch protections or repo rule sets on the repo, then the workflow can be triggered on `pull_request_review` since it will fail after the first PR review and will not pass the check until the minimum number of code owner reviews have been completed.
+
+Details:
+* Required input for the workflow:
+  * `GITHUB_TOKEN`
+  * `min_reviewers` - minimum number of codeowner reviewers required per any set of codeowner files; set to 2 or greater (will default to 2, if set to value less than 2)
+* Workflow will succeed with notice when a CODEOWNERS file is not found.
 
 Sample Output for Successful Check:
 ```
