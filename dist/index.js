@@ -9923,7 +9923,7 @@ async function main() {
       return core.setFailed(reviewInfo.error);
     }
 
-    core.notice(reviewInfo.success);
+    return core.notice(reviewInfo.success);
   } catch (error) {
     core.setFailed(error.message);
   }
