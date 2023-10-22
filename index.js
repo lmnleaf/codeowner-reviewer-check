@@ -14,6 +14,7 @@ async function main() {
     const octokit = new github.getOctokit(token);
 
     const minReviewers = core.getInput('min_reviewers');
+    const ignoreTeams = core.getInput('min_reviewers') || false;
 
     const codeownerContent = await getCodeownerContent(octokit, context)
     .then((info) => {
@@ -53,7 +54,7 @@ async function main() {
     })
 
     // prepare codeowner content so codeowner files can be compared to the PR files
-    const codeownerInfo = prepareCodeownerContent(codeownerContent);
+    const codeownerInfo = prepareCodeownerContent(codeownerContent, ignoreTeams, octokit);
 
     // set the required reviewers for the PR
     const requiredReviewers = setRequiredReviewers(codeownerInfo, prFilePaths);
