@@ -156,7 +156,7 @@ describe("Set Required Reviewers", function() {
   it('sets owners to an empty array when codeowners are blank', function() {
     codeownerInfo = [
       { patternType: 'directory', patternMatch: 'pip/peep', owners: [] },
-      { patternType: 'extension', patternMatch: '*.py', owners: [ '@codeowner4'] }
+      { patternType: 'extension', patternMatch: '*.py', owners: [ '@codeowner4' ] }
     ]
     let reviewers = setRequiredReviewers(codeownerInfo, prFiles);
     expect(reviewers).toEqual([{ files: 'pip/peep', requiredReviewers: [] }]);
@@ -164,7 +164,7 @@ describe("Set Required Reviewers", function() {
 
   it("sets required reviewers to an empty array when there aren't any matching files", function() {
     codeownerInfo = [
-      { patternType: 'directory', patternMatch: 'nothing/matches', owners: ['@codeowner1'] }
+      { patternType: 'directory', patternMatch: 'nothing/matches', owners: [ '@codeowner1' ] }
     ]
     let reviewers = setRequiredReviewers(codeownerInfo, prFiles);
     expect(reviewers).toEqual([]);
