@@ -9872,7 +9872,7 @@ async function main() {
     });
 
     if (codeownerContent === 'NO CODEOWNERS FOUND' ) {
-      return core.info(codeownerContent);
+      return core.notice(codeownerContent);
     }
 
     const prNumber = context.payload.pull_request.number;
