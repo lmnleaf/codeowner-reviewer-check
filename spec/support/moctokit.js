@@ -1,6 +1,10 @@
 class Moctokit {
   constructor() {
     this.rest = {
+      pulls: {
+        listFiles: this.listFiles,
+        listReviews: this.listReviews
+      },
       repos: {
         getContent: this.getContent
       },
@@ -14,6 +18,24 @@ class Moctokit {
     return Promise.resolve({
       data: { download_url: 'https://some/mock/url/example.com' }
     });
+  }
+
+  listFiles() {
+    return Promise.resolve({
+      data: [
+        { filename: 'pow/pop/woot.py' },
+        { filename: 'some_other_directory/yip.js' }
+      ]
+    })
+  }
+
+  listReviews() {
+    return Promise.resolve({
+      data: [
+        { user: { login: 'codeowner1' }, state: 'APPROVED' },
+        { user: { login: 'codeowner2' }, state: 'COMMENT' }
+      ]
+    })
   }
 
   listMembersInOrg() {
