@@ -9631,42 +9631,10 @@ function wrappy (fn, cb) {
 
 /***/ }),
 
-/***/ 2359:
+/***/ 9967:
 /***/ ((module) => {
 
-module.exports = eval("require")("../src/compare-reviewers.js");
-
-
-/***/ }),
-
-/***/ 3699:
-/***/ ((module) => {
-
-module.exports = eval("require")("../src/get-codeowner-content.js");
-
-
-/***/ }),
-
-/***/ 5801:
-/***/ ((module) => {
-
-module.exports = eval("require")("../src/prepare-codeowner-content.js");
-
-
-/***/ }),
-
-/***/ 6080:
-/***/ ((module) => {
-
-module.exports = eval("require")("../src/prepare-review-info.js");
-
-
-/***/ }),
-
-/***/ 4991:
-/***/ ((module) => {
-
-module.exports = eval("require")("../src/set-required-reviewers.js");
+module.exports = eval("require")("../src/codeowner-reviewer-check.js");
 
 
 /***/ }),
@@ -9850,13 +9818,9 @@ var __webpack_exports__ = {};
 (() => {
 const core = __nccwpck_require__(1655);
 const github = __nccwpck_require__(4901);
-const getCodeownerContent = __nccwpck_require__(3699);
-const prepareCodeownerContent = __nccwpck_require__(5801);
-const setRequiredReviewers = __nccwpck_require__(4991);
-const compareReviewers = __nccwpck_require__(2359);
-const prepareReviewInfo = __nccwpck_require__(6080);
 
 const context = github.context;
+const codeownerReviewerCheck = __nccwpck_require__(9967)
 
 async function main() {
   try {
@@ -9864,66 +9828,22 @@ async function main() {
     const octokit = new github.getOctokit(token);
 
     const minReviewers = core.getInput('min_reviewers');
+    const ignoreTeams = core.getInput('min_reviewers') || false;
 
-    const codeownerContent = await getCodeownerContent(octokit, context)
-    .then((info) => {
-      return info;
-    });
-
-    if (codeownerContent === 'NO CODEOWNERS FOUND' ) {
-      return core.info(codeownerContent);
-    }
-
-    const prNumber = context.payload.pull_request.number;
-
-    // get files from the PR
-    const prFileInfo = await octokit.rest.pulls.listFiles({
-      ...context.repo,
-      pull_number: prNumber,
-    }).then((response) => {
-      return response.data;
-    });
-
-    const prFilePaths = [];
-    prFileInfo.forEach((file) => {
-      prFilePaths.push(file.filename);
-    });
-
-    // get reviews on the PR
-    const reviews = await octokit.rest.pulls.listReviews({
-      ...context.repo,
-      pull_number: prNumber,
-    }).then((response) => {
-      return response.data;
-    });
-
-    const currentReviews = []
-    reviews.forEach((review) => {
-      currentReviews.push({ reviewer: '@' + review.user.login, state: review.state });
-    })
-
-    // prepare codeowner content so codeowner files can be compared to the PR files
-    const codeownerInfo = prepareCodeownerContent(codeownerContent);
-
-    // set the required reviewers for the PR
-    const requiredReviewers = setRequiredReviewers(codeownerInfo, prFilePaths);
-
-    // compare codeowners to reviews on the PR
-    const { completedReviews, startedReviews, needsReview, incompleteReviews } = compareReviewers(
-      currentReviews,
-      requiredReviewers,
-      minReviewers
+    const reviewerCheck = await codeownerReviewerCheck(
+      octokit,
+      context,
+      minReviewers,
+      ignoreTeams
     );
 
-    const reviewInfo = prepareReviewInfo(completedReviews, startedReviews, needsReview);
-
     // log codeowner reviews
-    if (incompleteReviews) {
-      core.info(reviewInfo.info);
-      return core.setFailed(reviewInfo.error);
+    if (reviewerCheck.reviewsNeeded) {
+      core.info(reviewerCheck.reviewInfo.info);
+      return core.setFailed(reviewerCheck.reviewInfo.error);
     }
 
-    return core.notice(reviewInfo.success);
+    return core.notice(reviewerCheck.reviewInfo.success);
   } catch (error) {
     core.setFailed(error.message);
   }

@@ -197,7 +197,7 @@ describe("Compare Reviewers", function() {
     expect(incompleteReviews).toEqual(false);
   });
 
-  it('indicates that reviews are still needed when reviews are started but not complete', function(){
+  it('indicates that reviews are still needed when reviews are started but not complete', function() {
     let currentReviews = [
       { reviewer: '@codeowner1', state: 'COMMENT' },
       { reviewer: '@codeowner2', state: 'COMMENT' },

@@ -11,7 +11,9 @@ Overview:
   * The minimum number of required code owner reviews can be set. It will default to 2 when it is not set or set to a number smaller than 2.
 
 Limitations:
-* This Action will not take exceptions to code owner requirements into account. If some files in a subdirectory are excepted from code owner review in your `CODEOWNERS` file, this action will ignore the exceptions and require review.
+* This Action ingores exceptions to code owner requirements. If some files in a subdirectory are excepted from code owner review in the `CODEOWNERS` file, this action will not take the exceptions into account and will require review.
+* This Action ignores code owners identified by email.
+* This Action converts teams to individual code owners. For example, if the `CODEOWNERS` file assignes code to `@org/team`, and `@codeowner1` and `@codeowner2` are the `@org/team` members, then the output will show that `@codeowner1` and `@codeowner2` need to review the PR. If teams are very large, this can be combersome.
 * This Action does not assign code owner reviewers to a PR.
 * To use this Action as a required status check, as long as code owner reviews are required as part of the branch protections or repo rule sets on the repo, then the workflow can be triggered on `pull_request_review` since it will fail after the first PR review and will not pass the check until the minimum number of code owner reviews have been completed.
 

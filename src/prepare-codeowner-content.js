@@ -1,14 +1,21 @@
-function prepareCodeownerContent(content) {
+const setOwners = require('./set-owners.js');
+
+async function prepareCodeownerContent(content, ignoreTeams, octokit) {
   // remove comments from CODEOWNERS content
   let filteredLines = content.split(/\s*$\s*/m)
     .filter((line) => !line.startsWith('#') && line !== '');
 
   // parse CODEOWNERS content
-  let codeownerInfo = []
-
-  filteredLines.forEach((line) => {
+  let codeownerInfo = [];
+  for (const line of filteredLines) {
     // split the codeowners line on the first space
-    let [first, ...owners] = line.split(/\s+/);
+    let [first, ...last] = line.split(/\s+/);
+    const owners = await setOwners(last, ignoreTeams, octokit)
+    .then((info) => {
+      return info;
+    }).catch((error) => {
+      throw error;
+    });
 
     let pattern = '';
     let patternMatch = '';
@@ -30,7 +37,7 @@ function prepareCodeownerContent(content) {
       patternMatch: patternMatch, 
       owners: owners
     });
-  });
+  }
 
   return codeownerInfo;
 }
