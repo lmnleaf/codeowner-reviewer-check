@@ -219,4 +219,33 @@ describe("Compare Reviewers", function() {
     expect(needsReview).toEqual([]);
     expect(incompleteReviews).toEqual(true);
   });
+
+  it('only includes completed reviews for a codeowner who left a comment or requested changes and later approved', function() {
+    let currentReviews = [
+      { reviewer: '@codeowner1', state: 'COMMENT' },
+      { reviewer: '@codeowner1', state: 'APPROVED' },
+      { reviewer: '@codeowner2', state: 'CHANGES_REQUESTED' },
+      { reviewer: '@codeowner2', state: 'APPROVED' },
+      { reviewer: '@codeowner5', state: 'COMMENT' }
+    ];
+
+    let { completedReviews, startedReviews, needsReview, incompleteReviews } = compareReviewers(
+      currentReviews,
+      requiredReviewers,
+      minReviewers
+    );
+    expect(completedReviews).toEqual([
+      { files: 'pow/pop/*', codeowners: [ '@codeowner1' ] },
+      { files: '*.js', codeowners: [ '@codeowner2' ] },
+      { files: '/woot/yip', codeowners: [ '@codeowner1' ] }
+    ])
+    expect(startedReviews).toEqual([
+      { files: '*.js', codeowners: [ '@codeowner5' ] },
+    ])
+    expect(needsReview).toEqual([
+      { files: 'pow/pop/*', codeowners: [ '@codeowner3' ] },
+      { files: '*.js', codeowners: [ '@codeowner3', '@codeowner6' ] }
+    ])
+    expect(incompleteReviews).toEqual(true);
+  });
 });
