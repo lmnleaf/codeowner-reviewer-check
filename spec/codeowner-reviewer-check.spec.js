@@ -9,7 +9,7 @@ describe("Codeowner Reviewer Check", function() {
     repo: 'repo-name'
   };
   let minReviewers = 2;
-  let ignoreTeams = false;
+  let includeTeams = true;
 
   let codeowners = `# Codeowners
   pow/pop/* @codeowner1
@@ -41,7 +41,7 @@ describe("Codeowner Reviewer Check", function() {
       }));
     });
 
-    let reviewerCheck = await codeownerReviewerCheck(octokit, context, minReviewers, ignoreTeams);
+    let reviewerCheck = await codeownerReviewerCheck(octokit, context, minReviewers, includeTeams);
 
     expect(reviewerCheck.reviewsNeeded).toEqual(true);
     expect(reviewerCheck.reviewInfo).toEqual(reviewInfo);
@@ -53,7 +53,7 @@ describe("Codeowner Reviewer Check", function() {
     });
 
     let reviewInfo = { info: null, error: null, success: 'NO CODEOWNERS FOUND' }
-    let reviewerCheck = await codeownerReviewerCheck(octokit, context, minReviewers, ignoreTeams);
+    let reviewerCheck = await codeownerReviewerCheck(octokit, context, minReviewers, includeTeams);
 
     expect(reviewerCheck.reviewsNeeded).toEqual(false);
     expect(reviewerCheck.reviewInfo).toEqual(reviewInfo);
@@ -74,14 +74,14 @@ describe("Codeowner Reviewer Check", function() {
       }));
     });
 
-    let reviewerCheck = await codeownerReviewerCheck(octokit, context, minReviewers, ignoreTeams);
+    let reviewerCheck = await codeownerReviewerCheck(octokit, context, minReviewers, includeTeams);
 
     expect(reviewerCheck.reviewsNeeded).toEqual(true);
     expect(reviewerCheck.reviewInfo).toEqual(reviewInfo);
   });
 
-  it('ignores teams when ignoreTeams is true', async function() {
-    let ignoreTeams = true;
+  it('ignores teams when includeTeams is false', async function() {
+    let includeTeams = false;
 
     let mockBody = new Readable();
     mockBody.push(codeowners);
@@ -100,7 +100,7 @@ describe("Codeowner Reviewer Check", function() {
       error: '\u001b[1mCodeowner reviews are needed. Please ask Codeowners to complete their reviews.',
       success: '\u001b[1mAll required Codeowner reviews have been completed. Thank you! \n'
     };
-    let reviewerCheck = await codeownerReviewerCheck(octokit, context, minReviewers, ignoreTeams);
+    let reviewerCheck = await codeownerReviewerCheck(octokit, context, minReviewers, includeTeams);
 
     expect(reviewerCheck.reviewsNeeded).toEqual(true);
     expect(reviewerCheck.reviewInfo).toEqual(reviewInfo);
@@ -112,7 +112,7 @@ describe("Codeowner Reviewer Check", function() {
     });
 
     try {
-      let reviewerCheck = await codeownerReviewerCheck(octokit, context, minReviewers, ignoreTeams);
+      let reviewerCheck = await codeownerReviewerCheck(octokit, context, minReviewers, includeTeams);
     } catch (error) {
       expect(error).toEqual(new Error('fetch error'));
     }

@@ -9824,22 +9824,23 @@ const codeownerReviewerCheck = __nccwpck_require__(9967)
 
 async function main() {
   try {
-    const token = core.getInput('GITHUB_TOKEN');
+    const token = core.getInput('TOKEN');
     const octokit = new github.getOctokit(token);
 
     const minReviewers = core.getInput('min_reviewers');
-    const ignoreTeams = core.getInput('min_reviewers') || false;
+    const includeTeams = core.getInput('include_teams') || false;
 
     const reviewerCheck = await codeownerReviewerCheck(
       octokit,
       context,
       minReviewers,
-      ignoreTeams
+      includeTeams
     );
 
     // log codeowner reviews
+    core.info(reviewerCheck.reviewInfo.info);
+
     if (reviewerCheck.reviewsNeeded) {
-      core.info(reviewerCheck.reviewInfo.info);
       return core.setFailed(reviewerCheck.reviewInfo.error);
     }
 
