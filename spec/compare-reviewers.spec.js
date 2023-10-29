@@ -1,12 +1,12 @@
 const compareReviewers = require("../src/compare-reviewers.js");
 
 describe("Compare Reviewers", function() {
-  const requiredReviewers = [
+  let requiredReviewers = [
     { files: 'pow/pop/*', requiredReviewers: [ '@codeowner1', '@codeowner3' ] },
     { files: '*.js', requiredReviewers: [ '@codeowner2', '@codeowner3', '@codeowner5', '@codeowner6' ] },
     { files: '/woot/yip', requiredReviewers: [ '@codeowner1' ] }
   ]
-  const minReviewers = 2;
+  let minReviewers = 2;
 
   it('returns reviews that have been completed by codeowners', function() {
     let currentReviews = [
@@ -159,8 +159,14 @@ describe("Compare Reviewers", function() {
   });
 
   it('requires at least the minimum approved reviews unless total codeowners are fewer than the minumum', function() {
+    let requiredReviewers = [
+      { files: 'pow/pop/*', requiredReviewers: [ '@codeowner1', '@codeowner3' ] },
+      { files: '/woot/yip', requiredReviewers: [ '@codeowner1' ] }
+    ]
+    let minReviewers = 3;
     let currentReviews = [
-      { reviewer: '@codeowner1', state: 'APPROVED' }
+      { reviewer: '@codeowner1', state: 'APPROVED' },
+      { reviewer: '@codeowner3', state: 'APPROVED' }
     ]
     let { completedReviews, startedReviews, needsReview, incompleteReviews } = compareReviewers(
       currentReviews,
@@ -168,15 +174,12 @@ describe("Compare Reviewers", function() {
       minReviewers
     );
     expect(completedReviews).toEqual([
-      { files: 'pow/pop/*', codeowners: ['@codeowner1'] },
-      { files: '/woot/yip', codeowners: ['@codeowner1'] }
+      { files: 'pow/pop/*', codeowners: ['@codeowner1', '@codeowner3'] },
+      { files: '/woot/yip', codeowners: [ '@codeowner1' ] }
     ]);
     expect(startedReviews).toEqual([])
-    expect(needsReview).toEqual([
-      { files: 'pow/pop/*', codeowners: ['@codeowner3'] },
-      { files: '*.js', codeowners: ['@codeowner2', '@codeowner3', '@codeowner5', '@codeowner6'] }
-    ]);
-    expect(incompleteReviews).toEqual(true);
+    expect(needsReview).toEqual([]);
+    expect(incompleteReviews).toEqual(false);
   });
 
   it("does NOT require reviews when their aren't any codeowners", function() {
