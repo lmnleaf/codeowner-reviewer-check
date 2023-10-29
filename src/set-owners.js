@@ -1,4 +1,4 @@
-async function setOwners(contentOwners, includeTeams, octokit) {
+async function setOwners(contentOwners, prCommitters, includeTeams, octokit) {
     // filter out email owners
     let nonEmailOwners = contentOwners.filter((owner) => 
       !owner.match(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)
@@ -6,8 +6,11 @@ async function setOwners(contentOwners, includeTeams, octokit) {
 
     let owners = nonEmailOwners.filter((owner) => !owner.includes('/'));
 
+    let committers = new Set([...prCommitters]);
+
     if (!includeTeams) {
-      return [...new Set(owners)];
+      owners = new Set([...owners].filter(o => !committers.has(o)));
+      return [...owners];
     }
 
     // in the codeowner file, the teams format is `@org/team`
@@ -32,7 +35,9 @@ async function setOwners(contentOwners, includeTeams, octokit) {
       teamMembers.forEach((member) => owners.push('@' + member.login));
     }
 
-  return [...new Set(owners)];
+  // filter out PR committers
+  owners = new Set([...owners].filter(o => !committers.has(o)));
+  return [...owners];
 }
 
 module.exports = setOwners
