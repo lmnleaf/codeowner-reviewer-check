@@ -10,7 +10,8 @@ async function main() {
     const octokit = new github.getOctokit(token);
 
     const minReviewers = core.getInput('min_reviewers');
-    const includeTeams = core.getInput('include_teams') || false;
+    const teamsInput = core.getInput('include_teams');
+    const includeTeams = teamsInput === 'true' || teamsInput === 1;
 
     const reviewerCheck = await codeownerReviewerCheck(
       octokit,

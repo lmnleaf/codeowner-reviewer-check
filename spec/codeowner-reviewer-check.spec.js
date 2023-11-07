@@ -106,6 +106,30 @@ describe("Codeowner Reviewer Check", function() {
     expect(reviewerCheck.reviewInfo).toEqual(reviewInfo);
   });
 
+  it('does NOT require review when the codeowner is a commit author', async function() {
+    let codeownersWithCommitters = `# Codeowners
+      pow/pop/* @codeowner1 @committer1
+      *.js @codeowner2 @org/team
+      /woot/yip @codeowner2 @codeowner3 @codeowner4 @committer2`;
+
+    let mockBody = new Readable();
+    mockBody.push(codeownersWithCommitters);
+    mockBody.push(null);
+    spyOn(globalThis, 'fetch').and.callFake(function() {
+      return Promise.resolve(new Response(mockBody, {
+        status: 200,
+        headers: new Headers({
+          'Content-Type': 'application/json'
+        })
+      }));
+    });
+
+    let reviewerCheck = await codeownerReviewerCheck(octokit, context, minReviewers, includeTeams);
+
+    expect(reviewerCheck.reviewsNeeded).toEqual(true);
+    expect(reviewerCheck.reviewInfo).toEqual(reviewInfo);
+  });
+
   it('handles errors', async function() {
     spyOn(globalThis, 'fetch').and.callFake(function() {
       return Promise.reject(new Error('fetch error'));

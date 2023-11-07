@@ -45,9 +45,11 @@ describe("Prepare Codeowner Content", function() {
     },
   ];
 
+  const committers = [ '@committer' ];
+
   it('preps codeowner content for comparision to PR files', async function() {
     let includeTeams = true;
-    let preparedContent = await prepareCodeownerContent(content, includeTeams, octokit);
+    let preparedContent = await prepareCodeownerContent(content, committers, includeTeams, octokit);
     expect(preparedContent).toEqual(codeownerInfo);
   });
 
@@ -64,7 +66,7 @@ describe("Prepare Codeowner Content", function() {
         return info;
       }
     });
-    let preparedContent = await prepareCodeownerContent(content, includeTeams, octokit);
+    let preparedContent = await prepareCodeownerContent(content, committers, includeTeams, octokit);
     expect(preparedContent).toEqual(noTeamsInfo);
   });
 });

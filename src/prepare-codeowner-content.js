@@ -1,6 +1,6 @@
 const setOwners = require('./set-owners.js');
 
-async function prepareCodeownerContent(content, includeTeams, octokit) {
+async function prepareCodeownerContent(content, prCommitters, includeTeams, octokit) {
   // remove comments from CODEOWNERS content
   let filteredLines = content.split(/\s*$\s*/m)
     .filter((line) => !line.startsWith('#') && line !== '');
@@ -10,7 +10,7 @@ async function prepareCodeownerContent(content, includeTeams, octokit) {
   for (const line of filteredLines) {
     // split the codeowners line on the first space
     let [first, ...last] = line.split(/\s+/);
-    const owners = await setOwners(last, includeTeams, octokit)
+    const owners = await setOwners(last, prCommitters, includeTeams, octokit)
     .then((info) => {
       return info;
     }).catch((error) => {

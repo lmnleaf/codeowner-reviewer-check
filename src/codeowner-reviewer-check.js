@@ -20,6 +20,19 @@ async function codeownerReviewerCheck(octokit, context, minReviewers, includeTea
 
     const prNumber = context.payload.pull_request.number;
 
+    // get PR committers
+    const prCommits = await octokit.rest.pulls.listCommits({
+      ...context.repo,
+      pull_number: prNumber
+    }).then((response) => {
+      return response.data;
+    });
+
+    const prCommitters = [];
+    prCommits.forEach((commit) => {
+      prCommitters.push('@' + commit.author.login);
+    })
+
     // get files from the PR
     const prFileInfo = await octokit.rest.pulls.listFiles({
       ...context.repo,
@@ -47,7 +60,7 @@ async function codeownerReviewerCheck(octokit, context, minReviewers, includeTea
     })
 
     // prepare codeowner content so codeowner files can be compared to the PR files
-    const codeownerInfo = await prepareCodeownerContent(codeownerContent, includeTeams, octokit);
+    const codeownerInfo = await prepareCodeownerContent(codeownerContent, prCommitters, includeTeams, octokit);
 
     // set the required reviewers for the PR
     const requiredReviewers = setRequiredReviewers(codeownerInfo, prFilePaths);

@@ -2,6 +2,7 @@ class Moctokit {
   constructor() {
     this.rest = {
       pulls: {
+        listCommits: this.listCommits,
         listFiles: this.listFiles,
         listReviews: this.listReviews
       },
@@ -18,6 +19,15 @@ class Moctokit {
     return Promise.resolve({
       data: { download_url: 'https://some/mock/url/example.com' }
     });
+  }
+
+  listCommits() {
+    return Promise.resolve({
+      data: [
+        { author: { login: 'committer1' } },
+        { author: { login: 'committer2' } }
+      ]
+    })
   }
 
   listFiles() {
