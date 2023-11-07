@@ -29,8 +29,11 @@ function compareReviewers(currentReviews, requiredReviewers, minReviewers) {
     // Set of codeowners that approved the PR
     let approvalIntersection = new Set([...approvalsSet].filter(r => requiredSet.has(r)));
 
-    // Set of codeowners that have started a review on the PR
-    let startedIntersection = new Set([...startedSet].filter(r => requiredSet.has(r)));
+    // Set of codeowners that have started a review on the PR but have not approved it
+    let startedIntersection = new Set([...startedSet]
+      .filter(r => requiredSet.has(r))
+      .filter(r => !approvalIntersection.has(r))
+    );
 
     // min reviewers for the files
     let min = minReviewers;
