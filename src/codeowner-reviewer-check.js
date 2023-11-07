@@ -4,7 +4,7 @@ const setRequiredReviewers = require('./set-required-reviewers.js');
 const compareReviewers = require('./compare-reviewers.js');
 const prepareReviewInfo = require('./prepare-review-info.js');
 
-async function codeownerReviewerCheck(octokit, context, minReviewers, ignoreTeams) {
+async function codeownerReviewerCheck(octokit, context, minReviewers, includeTeams) {
   try {
     const codeownerContent = await getCodeownerContent(octokit, context)
     .then((info) => {
@@ -47,7 +47,7 @@ async function codeownerReviewerCheck(octokit, context, minReviewers, ignoreTeam
     })
 
     // prepare codeowner content so codeowner files can be compared to the PR files
-    const codeownerInfo = await prepareCodeownerContent(codeownerContent, ignoreTeams, octokit);
+    const codeownerInfo = await prepareCodeownerContent(codeownerContent, includeTeams, octokit);
 
     // set the required reviewers for the PR
     const requiredReviewers = setRequiredReviewers(codeownerInfo, prFilePaths);

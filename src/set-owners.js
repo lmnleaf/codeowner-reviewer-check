@@ -1,4 +1,4 @@
-async function setOwners(contentOwners, ignoreTeams, octokit) {
+async function setOwners(contentOwners, includeTeams, octokit) {
     // filter out email owners
     let nonEmailOwners = contentOwners.filter((owner) => 
       !owner.match(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)
@@ -6,7 +6,7 @@ async function setOwners(contentOwners, ignoreTeams, octokit) {
 
     let owners = nonEmailOwners.filter((owner) => !owner.includes('/'));
 
-    if (ignoreTeams) {
+    if (!includeTeams) {
       return [...new Set(owners)];
     }
 

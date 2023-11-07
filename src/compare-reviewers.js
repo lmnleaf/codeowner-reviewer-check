@@ -37,7 +37,7 @@ function compareReviewers(currentReviews, requiredReviewers, minReviewers) {
 
     // min reviewers for the files
     let min = minReviewers;
-    if (requiredSet.size < 2) {
+    if (requiredSet.size < min) {
       min = requiredSet.size
     }
 

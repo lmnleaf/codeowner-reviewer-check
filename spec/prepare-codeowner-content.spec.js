@@ -46,13 +46,13 @@ describe("Prepare Codeowner Content", function() {
   ];
 
   it('preps codeowner content for comparision to PR files', async function() {
-    let ignoreTeams = false;
-    let preparedContent = await prepareCodeownerContent(content, ignoreTeams, octokit);
+    let includeTeams = true;
+    let preparedContent = await prepareCodeownerContent(content, includeTeams, octokit);
     expect(preparedContent).toEqual(codeownerInfo);
   });
 
-  it('preps codeowner content when ignoreTeams is true', async function() {
-    let ignoreTeams = true;
+  it('preps codeowner content when includeTeams is true', async function() {
+    let includeTeams = false;
     let noTeamsInfo = codeownerInfo.map(info => {
       if(info.patternMatch === 'wow/') {
         return {
@@ -64,7 +64,7 @@ describe("Prepare Codeowner Content", function() {
         return info;
       }
     });
-    let preparedContent = await prepareCodeownerContent(content, ignoreTeams, octokit);
+    let preparedContent = await prepareCodeownerContent(content, includeTeams, octokit);
     expect(preparedContent).toEqual(noTeamsInfo);
   });
 });

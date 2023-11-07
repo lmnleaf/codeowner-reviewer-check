@@ -2,14 +2,14 @@ name: 'Reviewer Check'
 description: 'Checks for more than one Codeowner reviewer on a PR.'
 
 inputs:
-  GITHUB_TOKEN:
-    description: 'GitHub Token'
+  TOKEN:
+    description: 'GitHub Token or Personal Access Token - must use PAT when include_teams is set to `true`.'
     required: true
   min_reviewers:
-    description: 'Minimum number of codeowner reviews'
+    description: 'Minimum number of codeowner reviews.'
     required: true
-  ignore_teams:
-    description: 'Ignore team codeowners, i.e., only consider individual codeowners'
+  include_teams:
+    description: 'Set to `true` to include team codeowners; when include_teams is set to `false` or NOT set, team codeowners will be ignored.'
     required: false
 
 runs:
